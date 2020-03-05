@@ -1,10 +1,9 @@
-PROTOS := brymck/securities/v1/securities_api
+PROTOS := brymck/risk/v1/risk_api brymck/securities/v1/securities_api
 
 GO_FILES := $(shell find . -name '*.go')
 PROTO_FILES := $(shell find proto -name '*.proto' 2>/dev/null) $(foreach proto,$(PROTOS),proto/$(proto).proto)
 PROTO_PATH := /usr/local/include
 GENPROTO_FILES := $(patsubst proto/%.proto,genproto/%.pb.go,$(PROTO_FILES))
-GITHUB_TOKEN := $(GITHUB_TOKEN)
 
 all: generate test build
 
@@ -16,6 +15,10 @@ init: .init.stamp
 	touch $@
 
 generate: $(GENPROTO_FILES)
+
+proto/brymck/risk/v1/risk_api.proto:
+	mkdir -p $(dir $@)
+	curl --fail --location --output $@ --silent --show-error https://$(GITHUB_TOKEN)@raw.githubusercontent.com/brymck/risk-service/master/$@
 
 proto/brymck/securities/v1/securities_api.proto:
 	mkdir -p $(dir $@)

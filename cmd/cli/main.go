@@ -10,7 +10,10 @@ import (
 )
 
 func main() {
-	app := &cli.App{Commands: []*cli.Command{commands.GetSecuritiesCommand()}}
+	app := &cli.App{Commands: []*cli.Command{
+		commands.GetRiskCommand(),
+		commands.GetSecuritiesCommand(),
+	}}
 
 	err := app.Run(os.Args)
 	if err != nil {

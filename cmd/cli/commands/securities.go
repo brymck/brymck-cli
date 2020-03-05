@@ -33,13 +33,13 @@ func GetSecuritiesCommand() *cli.Command {
 	var addr string
 	flags := []cli.Flag{
 		&cli.Uint64Flag{
-			Name:  "id",
-			Usage: "security ID",
+			Name:        "id",
+			Usage:       "security ID",
 			Destination: &id,
 		},
 		&cli.StringFlag{
-			Name:  "address",
-			Usage: "address override",
+			Name:        "address",
+			Usage:       "address override",
 			Destination: &addr,
 		},
 	}
@@ -66,6 +66,29 @@ func GetSecuritiesCommand() *cli.Command {
 						return err
 					}
 					pkg.PrintAsJson(resp.Security)
+					return nil
+				},
+			},
+			{
+				Name:  "get-prices",
+				Usage: "get prices",
+				Flags: flags,
+				Action: func(c *cli.Context) error {
+					startDate := &pb.Date{Year: 2020, Month: 1, Day: 1}
+					endDate := &pb.Date{Year: 2020, Month: 3, Day: 1}
+					req := &pb.GetPricesRequest{Id: id, StartDate: startDate, EndDate: endDate}
+
+					api, err := getSecuritiesApi(addr)
+					if err != nil {
+						return err
+					}
+					defer api.Close()
+
+					resp, err := api.client.GetPrices(api.connection.Context, req)
+					if err != nil {
+						return err
+					}
+					pkg.PrintAsJson(resp)
 					return nil
 				},
 			},
