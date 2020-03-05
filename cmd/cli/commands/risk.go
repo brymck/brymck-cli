@@ -1,6 +1,9 @@
 package commands
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/urfave/cli/v2"
 
 	pb "github.com/brymck/brymck-cli/genproto/brymck/risk/v1"
@@ -30,6 +33,7 @@ func getRiskApi(addr string) (*riskApi, error) {
 
 func GetRiskCommand() *cli.Command {
 	var id uint64
+	var idsString string
 	var addr string
 	flags := []cli.Flag{
 		&cli.Uint64Flag{
@@ -49,7 +53,7 @@ func GetRiskCommand() *cli.Command {
 		Usage: "risk",
 		Subcommands: []*cli.Command{
 			{
-				Name:  "get",
+				Name:  "get-risk",
 				Usage: "get security risk by ID",
 				Flags: flags,
 				Action: func(c *cli.Context) error {
@@ -62,6 +66,48 @@ func GetRiskCommand() *cli.Command {
 					defer api.Close()
 
 					resp, err := api.client.GetRisk(api.connection.Context, req)
+					if err != nil {
+						return err
+					}
+					pkg.PrintAsJson(resp)
+					return nil
+				},
+			},
+			{
+				Name:  "get-covariances",
+				Usage: "get covariances by security IDs",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:        "ids",
+						Usage:       "comma-delimited list of security IDs",
+						Destination: &idsString,
+					},
+					&cli.StringFlag{
+						Name:        "address",
+						Usage:       "address override",
+						Destination: &addr,
+					},
+				},
+				Action: func(c *cli.Context) error {
+					parts := strings.Split(idsString, ",")
+					ids := make([]uint64, len(parts))
+					for i, part := range parts {
+						n, err := strconv.Atoi(part)
+						if err != nil {
+							return err
+						}
+						ids[i] = uint64(n)
+					}
+
+					req := &pb.GetCovariancesRequest{SecurityIds: ids}
+
+					api, err := getRiskApi(addr)
+					if err != nil {
+						return err
+					}
+					defer api.Close()
+
+					resp, err := api.client.GetCovariances(api.connection.Context, req)
 					if err != nil {
 						return err
 					}
