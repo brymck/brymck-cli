@@ -5,7 +5,7 @@ PROTO_FILES := $(shell find proto -name '*.proto' 2>/dev/null) $(foreach proto,$
 PROTO_PATH := /usr/local/include
 GENPROTO_FILES := $(patsubst proto/%.proto,genproto/%.pb.go,$(PROTO_FILES))
 
-all: generate test build
+all: proto test build
 
 init: .init.stamp
 
@@ -14,7 +14,7 @@ init: .init.stamp
 	go mod download
 	touch $@
 
-generate: $(GENPROTO_FILES)
+proto: $(GENPROTO_FILES)
 
 proto/brymck/risk/v1/risk_api.proto:
 	mkdir -p $(dir $@)
@@ -25,6 +25,7 @@ proto/brymck/securities/v1/securities_api.proto:
 	curl --fail --location --output $@ --silent --show-error https://$(GITHUB_TOKEN)@raw.githubusercontent.com/brymck/securities-service/master/$@
 
 genproto/%.pb.go: proto/%.proto | .init.stamp
+	mkdir -p $(dir $@)
 	protoc -Iproto -I$(PROTO_PATH) --go_out=plugins=grpc:genproto $<
 
 test: profile.out
@@ -40,4 +41,4 @@ blm: $(GO_FILES) $(GENPROTO_FILES) | .init.stamp
 clean:
 	rm -rf proto/ genproto/ .init.stamp profile.out client service
 
-.PHONY: all init generate test build clean
+.PHONY: all init proto test build clean
