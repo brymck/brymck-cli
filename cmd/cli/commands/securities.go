@@ -3,7 +3,7 @@ package commands
 import (
 	"github.com/urfave/cli/v2"
 
-	pb "github.com/brymck/brymck-cli/genproto"
+	pb "github.com/brymck/brymck-cli/genproto/brymck/securities/v1"
 	"github.com/brymck/brymck-cli/pkg"
 	"github.com/brymck/brymck-cli/pkg/connections"
 )

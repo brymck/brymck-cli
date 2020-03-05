@@ -1,4 +1,4 @@
-PROTOS := securities_api
+PROTOS := brymck/securities/v1/securities_api
 
 GO_FILES := $(shell find . -name '*.go')
 PROTO_FILES := $(shell find proto -name '*.proto' 2>/dev/null) $(foreach proto,$(PROTOS),proto/$(proto).proto)
@@ -17,14 +17,12 @@ init: .init.stamp
 
 generate: $(GENPROTO_FILES)
 
-proto genproto:
-	mkdir $@
-
-proto/securities_api.proto: | proto
+proto/brymck/securities/v1/securities_api.proto:
+	mkdir -p $(dir $@)
 	curl --fail --location --output $@ --silent --show-error https://$(GITHUB_TOKEN)@raw.githubusercontent.com/brymck/securities-service/master/$@
 
-genproto/%.pb.go: proto/%.proto | .init.stamp genproto
-	protoc -Iproto -I$(PROTO_PATH) --go_out=plugins=grpc:$(dir $@) $<
+genproto/%.pb.go: proto/%.proto | .init.stamp
+	protoc -Iproto -I$(PROTO_PATH) --go_out=plugins=grpc:genproto $<
 
 test: profile.out
 
