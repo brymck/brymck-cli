@@ -5,30 +5,15 @@ import (
 
 	"github.com/urfave/cli/v2"
 
+	"github.com/brymck/helpers/services"
+
 	cal "github.com/brymck/brymck-cli/genproto/brymck/calendar/v1"
 	dt "github.com/brymck/brymck-cli/genproto/brymck/dates/v1"
 	"github.com/brymck/brymck-cli/pkg"
-	"github.com/brymck/brymck-cli/pkg/connections"
 )
 
-const calendarServiceName = "calendar-service"
-
-type calendarApi struct {
-	client     cal.CalendarAPIClient
-	connection *connections.Connection
-}
-
-func (api *calendarApi) Close() {
-	api.connection.Close()
-}
-
-func getCalendarApi(addr string) (*calendarApi, error) {
-	conn, err := connections.NewConnection(calendarServiceName, addr)
-	if err != nil {
-		return nil, err
-	}
-	client := cal.NewCalendarAPIClient(conn.GrpcClientConnection)
-	return &calendarApi{client: client, connection: conn}, nil
+func getCalendarApi() cal.CalendarAPIClient {
+	return cal.NewCalendarAPIClient(services.MustConnect("calendar-service"))
 }
 
 func toProtoDate(text string) (*dt.Date, error) {
@@ -82,13 +67,8 @@ func GetCalendarCommand() *cli.Command {
 					}
 					req := &cal.GetDatesRequest{StartDate: start, EndDate: end}
 
-					api, err := getCalendarApi(addr)
-					if err != nil {
-						return err
-					}
-					defer api.Close()
-
-					resp, err := api.client.GetDates(api.connection.Context, req)
+					api := getCalendarApi()
+					resp, err := api.GetDates(makeContext(), req)
 					if err != nil {
 						return err
 					}

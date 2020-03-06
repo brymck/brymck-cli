@@ -1,31 +1,15 @@
 package commands
 
 import (
+	"github.com/brymck/helpers/services"
 	"github.com/urfave/cli/v2"
 
 	pb "github.com/brymck/brymck-cli/genproto/brymck/securities/v1"
 	"github.com/brymck/brymck-cli/pkg"
-	"github.com/brymck/brymck-cli/pkg/connections"
 )
 
-const securitiesServiceName = "securities-service"
-
-type securitiesApi struct {
-	client     pb.SecuritiesAPIClient
-	connection *connections.Connection
-}
-
-func (api *securitiesApi) Close() {
-	api.connection.Close()
-}
-
-func getSecuritiesApi(addr string) (*securitiesApi, error) {
-	conn, err := connections.NewConnection(securitiesServiceName, addr)
-	if err != nil {
-		return nil, err
-	}
-	client := pb.NewSecuritiesAPIClient(conn.GrpcClientConnection)
-	return &securitiesApi{client: client, connection: conn}, nil
+func getSecuritiesApi() pb.SecuritiesAPIClient {
+	return pb.NewSecuritiesAPIClient(services.MustConnect("securities-service"))
 }
 
 func GetSecuritiesCommand() *cli.Command {
@@ -54,14 +38,8 @@ func GetSecuritiesCommand() *cli.Command {
 				Flags: flags,
 				Action: func(c *cli.Context) error {
 					req := &pb.GetSecurityRequest{Id: id}
-
-					api, err := getSecuritiesApi(addr)
-					if err != nil {
-						return err
-					}
-					defer api.Close()
-
-					resp, err := api.client.GetSecurity(api.connection.Context, req)
+					api := getSecuritiesApi()
+					resp, err := api.GetSecurity(makeContext(), req)
 					if err != nil {
 						return err
 					}
@@ -77,14 +55,8 @@ func GetSecuritiesCommand() *cli.Command {
 					startDate := &pb.Date{Year: 2020, Month: 1, Day: 1}
 					endDate := &pb.Date{Year: 2020, Month: 3, Day: 1}
 					req := &pb.GetPricesRequest{Id: id, StartDate: startDate, EndDate: endDate}
-
-					api, err := getSecuritiesApi(addr)
-					if err != nil {
-						return err
-					}
-					defer api.Close()
-
-					resp, err := api.client.GetPrices(api.connection.Context, req)
+					api := getSecuritiesApi()
+					resp, err := api.GetPrices(makeContext(), req)
 					if err != nil {
 						return err
 					}
@@ -98,14 +70,8 @@ func GetSecuritiesCommand() *cli.Command {
 				Flags: flags,
 				Action: func(c *cli.Context) error {
 					req := &pb.UpdatePricesRequest{Id: id}
-
-					api, err := getSecuritiesApi(addr)
-					if err != nil {
-						return err
-					}
-					defer api.Close()
-
-					resp, err := api.client.UpdatePrices(api.connection.Context, req)
+					api := getSecuritiesApi()
+					resp, err := api.UpdatePrices(makeContext(), req)
 					if err != nil {
 						return err
 					}

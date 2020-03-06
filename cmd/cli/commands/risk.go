@@ -4,31 +4,15 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/brymck/helpers/services"
 	"github.com/urfave/cli/v2"
 
 	pb "github.com/brymck/brymck-cli/genproto/brymck/risk/v1"
 	"github.com/brymck/brymck-cli/pkg"
-	"github.com/brymck/brymck-cli/pkg/connections"
 )
 
-const riskServiceName = "risk-service"
-
-type riskApi struct {
-	client     pb.RiskAPIClient
-	connection *connections.Connection
-}
-
-func (api *riskApi) Close() {
-	api.connection.Close()
-}
-
-func getRiskApi(addr string) (*riskApi, error) {
-	conn, err := connections.NewConnection(riskServiceName, addr)
-	if err != nil {
-		return nil, err
-	}
-	client := pb.NewRiskAPIClient(conn.GrpcClientConnection)
-	return &riskApi{client: client, connection: conn}, nil
+func getRiskApi() pb.RiskAPIClient {
+	return pb.NewRiskAPIClient(services.MustConnect("risk-service"))
 }
 
 func GetRiskCommand() *cli.Command {
@@ -58,14 +42,8 @@ func GetRiskCommand() *cli.Command {
 				Flags: flags,
 				Action: func(c *cli.Context) error {
 					req := &pb.GetRiskRequest{SecurityId: id}
-
-					api, err := getRiskApi(addr)
-					if err != nil {
-						return err
-					}
-					defer api.Close()
-
-					resp, err := api.client.GetRisk(api.connection.Context, req)
+					api := getRiskApi()
+					resp, err := api.GetRisk(makeContext(), req)
 					if err != nil {
 						return err
 					}
@@ -101,13 +79,8 @@ func GetRiskCommand() *cli.Command {
 
 					req := &pb.GetCovariancesRequest{SecurityIds: ids}
 
-					api, err := getRiskApi(addr)
-					if err != nil {
-						return err
-					}
-					defer api.Close()
-
-					resp, err := api.client.GetCovariances(api.connection.Context, req)
+					api := getRiskApi()
+					resp, err := api.GetCovariances(makeContext(), req)
 					if err != nil {
 						return err
 					}
