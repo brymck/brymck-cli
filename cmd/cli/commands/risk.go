@@ -15,15 +15,29 @@ func getRiskApi() pb.RiskAPIClient {
 	return pb.NewRiskAPIClient(services.MustConnect("risk-service"))
 }
 
+func getFrequency(monthly bool) pb.Frequency {
+	if monthly {
+		return pb.Frequency_FREQUENCY_MONTHLY
+	} else {
+		return pb.Frequency_FREQUENCY_DAILY
+	}
+}
+
 func GetRiskCommand() *cli.Command {
 	var id uint64
 	var idsString string
 	var addr string
+	var monthly bool
 	flags := []cli.Flag{
 		&cli.Uint64Flag{
 			Name:        "id",
 			Usage:       "security ID",
 			Destination: &id,
+		},
+		&cli.BoolFlag{
+			Name:        "monthly",
+			Usage:       "use monthly returns",
+			Destination: &monthly,
 		},
 		&cli.StringFlag{
 			Name:        "address",
@@ -41,7 +55,8 @@ func GetRiskCommand() *cli.Command {
 				Usage: "get security risk by ID",
 				Flags: flags,
 				Action: func(c *cli.Context) error {
-					req := &pb.GetRiskRequest{SecurityId: id}
+					freq := getFrequency(monthly)
+					req := &pb.GetRiskRequest{SecurityId: id, Frequency: freq}
 					api := getRiskApi()
 					resp, err := api.GetRisk(makeContext(), req)
 					if err != nil {
@@ -77,7 +92,8 @@ func GetRiskCommand() *cli.Command {
 						ids[i] = uint64(n)
 					}
 
-					req := &pb.GetCovariancesRequest{SecurityIds: ids}
+					freq := getFrequency(monthly)
+					req := &pb.GetCovariancesRequest{SecurityIds: ids, Frequency: freq}
 
 					api := getRiskApi()
 					resp, err := api.GetCovariances(makeContext(), req)
@@ -93,7 +109,8 @@ func GetRiskCommand() *cli.Command {
 				Usage: "get return time series by security ID",
 				Flags: flags,
 				Action: func(c *cli.Context) error {
-					req := &pb.GetReturnTimeSeriesRequest{SecurityId: id}
+					freq := getFrequency(monthly)
+					req := &pb.GetReturnTimeSeriesRequest{SecurityId: id, Frequency: freq}
 					api := getRiskApi()
 					resp, err := api.GetReturnTimeSeries(makeContext(), req)
 					if err != nil {
