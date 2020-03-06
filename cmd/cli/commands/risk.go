@@ -11,8 +11,12 @@ import (
 	"github.com/brymck/brymck-cli/pkg"
 )
 
-func getRiskApi() pb.RiskAPIClient {
-	return pb.NewRiskAPIClient(services.MustConnect("risk-service"))
+func getRiskApi(addr string) pb.RiskAPIClient {
+	if addr != "" {
+		return pb.NewRiskAPIClient(services.MustConnectLocally(addr))
+	} else {
+		return pb.NewRiskAPIClient(services.MustConnect("risk-service"))
+	}
 }
 
 func getFrequency(monthly bool) pb.Frequency {
@@ -57,7 +61,7 @@ func GetRiskCommand() *cli.Command {
 				Action: func(c *cli.Context) error {
 					freq := getFrequency(monthly)
 					req := &pb.GetRiskRequest{SecurityId: id, Frequency: freq}
-					api := getRiskApi()
+					api := getRiskApi(addr)
 					resp, err := api.GetRisk(makeContext(), req)
 					if err != nil {
 						return err
@@ -95,7 +99,7 @@ func GetRiskCommand() *cli.Command {
 					freq := getFrequency(monthly)
 					req := &pb.GetCovariancesRequest{SecurityIds: ids, Frequency: freq}
 
-					api := getRiskApi()
+					api := getRiskApi(addr)
 					resp, err := api.GetCovariances(makeContext(), req)
 					if err != nil {
 						return err
@@ -111,7 +115,7 @@ func GetRiskCommand() *cli.Command {
 				Action: func(c *cli.Context) error {
 					freq := getFrequency(monthly)
 					req := &pb.GetReturnTimeSeriesRequest{SecurityId: id, Frequency: freq}
-					api := getRiskApi()
+					api := getRiskApi(addr)
 					resp, err := api.GetReturnTimeSeries(makeContext(), req)
 					if err != nil {
 						return err
