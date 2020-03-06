@@ -1,4 +1,4 @@
-PROTOS := brymck/risk/v1/risk_api brymck/securities/v1/securities_api
+PROTOS := brymck/dates/v1/date brymck/calendar/v1/calendar_api brymck/risk/v1/risk_api brymck/securities/v1/securities_api
 
 GO_FILES := $(shell find . -name '*.go')
 PROTO_FILES := $(shell find proto -name '*.proto' 2>/dev/null) $(foreach proto,$(PROTOS),proto/$(proto).proto)
@@ -14,7 +14,17 @@ init: .init.stamp
 	go mod download
 	touch $@
 
-proto: $(GENPROTO_FILES)
+proto: $(PROTO_FILES) $(GENPROTO_FILES)
+
+proto/brymck/dates/v1/date.proto:
+	mkdir -p $(dir $@)
+	curl --fail --location --output $@ --silent --show-error https://raw.githubusercontent.com/brymck/protos/master/brymck/dates/v1/date.proto
+	echo >> $@
+	echo 'option go_package = "github.com/brymck/brymck-cli/genproto/brymck/dates/v1";' >> $@
+
+proto/brymck/calendar/v1/calendar_api.proto:
+	mkdir -p $(dir $@)
+	curl --fail --location --output $@ --silent --show-error https://$(GITHUB_TOKEN)@raw.githubusercontent.com/brymck/calendar-service/master/$@
 
 proto/brymck/risk/v1/risk_api.proto:
 	mkdir -p $(dir $@)
@@ -26,7 +36,7 @@ proto/brymck/securities/v1/securities_api.proto:
 
 genproto/%.pb.go: proto/%.proto | .init.stamp
 	mkdir -p $(dir $@)
-	protoc -Iproto -I$(PROTO_PATH) --go_out=plugins=grpc:genproto $<
+	protoc -Iproto -I$(PROTO_PATH) --go_out=paths=source_relative,plugins=grpc:genproto $<
 
 test: profile.out
 

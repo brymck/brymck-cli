@@ -11,6 +11,7 @@ import (
 
 func main() {
 	app := &cli.App{Commands: []*cli.Command{
+		commands.GetCalendarCommand(),
 		commands.GetRiskCommand(),
 		commands.GetSecuritiesCommand(),
 	}}
