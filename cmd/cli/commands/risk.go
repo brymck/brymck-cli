@@ -88,6 +88,21 @@ func GetRiskCommand() *cli.Command {
 					return nil
 				},
 			},
+			{
+				Name:  "get-returns",
+				Usage: "get return time series by security ID",
+				Flags: flags,
+				Action: func(c *cli.Context) error {
+					req := &pb.GetReturnTimeSeriesRequest{SecurityId: id}
+					api := getRiskApi()
+					resp, err := api.GetReturnTimeSeries(makeContext(), req)
+					if err != nil {
+						return err
+					}
+					pkg.PrintAsJson(resp)
+					return nil
+				},
+			},
 		},
 	}
 }
