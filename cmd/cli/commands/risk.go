@@ -4,10 +4,10 @@ import (
 	"strconv"
 	"strings"
 
+	pb "github.com/brymck/genproto/brymck/risk/v1"
 	"github.com/brymck/helpers/services"
 	"github.com/urfave/cli/v2"
 
-	pb "github.com/brymck/brymck-cli/genproto/brymck/risk/v1"
 	"github.com/brymck/brymck-cli/pkg"
 )
 

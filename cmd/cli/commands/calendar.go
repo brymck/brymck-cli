@@ -3,12 +3,11 @@ package commands
 import (
 	"time"
 
+	cal "github.com/brymck/genproto/brymck/calendar/v1"
+	dt "github.com/brymck/genproto/brymck/dates/v1"
+	"github.com/brymck/helpers/services"
 	"github.com/urfave/cli/v2"
 
-	"github.com/brymck/helpers/services"
-
-	cal "github.com/brymck/brymck-cli/genproto/brymck/calendar/v1"
-	dt "github.com/brymck/brymck-cli/genproto/brymck/dates/v1"
 	"github.com/brymck/brymck-cli/pkg"
 )
 

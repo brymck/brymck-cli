@@ -18,8 +18,10 @@ cloud.google.com/go/storage v1.5.0/go.mod h1:tpKbwo567HUNpVclU5sGELwQWBDZ8gh0Zeo
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
-github.com/brymck/helpers v0.0.0-20200306171241-66200142a2d3 h1:IgsN2L+8BYOnn7M9r4g756wSLOrUVdAKc8I4/LgXoYs=
-github.com/brymck/helpers v0.0.0-20200306171241-66200142a2d3/go.mod h1:TavkBEpkR3owp7CUFxTRblXDMlU964upJ2ff86Cv0l4=
+github.com/brymck/genproto v0.0.0-20200308171659-498ebc209346 h1:d+dpTwR0t48QlVyrW201SN9ugg2CLFWDkdtxaSYAVQ0=
+github.com/brymck/genproto v0.0.0-20200308171659-498ebc209346/go.mod h1:8i+Ulugidt0csnkd0pcaMv/zdQ05cr+nOijF1b1jUxM=
+github.com/brymck/helpers v0.0.0-20200308153012-2f14254c1f71 h1:MtbqWhv2WeUiYMT5wOhuvKgh3cGmdamNoFDqfLs5S5w=
+github.com/brymck/helpers v0.0.0-20200308153012-2f14254c1f71/go.mod h1:TavkBEpkR3owp7CUFxTRblXDMlU964upJ2ff86Cv0l4=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
@@ -238,6 +240,7 @@ google.golang.org/grpc v1.19.0/go.mod h1:mqu4LbDTu4XGKhr4mRzUsmM4RtVoemTSY81AxZi
 google.golang.org/grpc v1.20.1/go.mod h1:10oTOabMzJvdu6/UiuZezV6QK5dSlG84ov/aaiqXj38=
 google.golang.org/grpc v1.21.1/go.mod h1:oYelfM1adQP15Ek0mdvEgi9Df8B9CZIaU1084ijfRaM=
 google.golang.org/grpc v1.23.0/go.mod h1:Y5yQAOtifL1yxbo5wqy6BxZv8vAUGQwXBOALyacEbxg=
+google.golang.org/grpc v1.26.0 h1:2dTRdpdFEEhJYQD8EMLB61nnrzSCTbG38PhqdhvOltg=
 google.golang.org/grpc v1.26.0/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8abTk=
 google.golang.org/grpc v1.27.0/go.mod h1:qbnxyOmOxrQa7FizSgH+ReBfzJrCY1pSN7KXBS8abTk=
 google.golang.org/grpc v1.27.1 h1:zvIju4sqAGvwKspUQOhwnpcqSbzi7/H6QomNNjTL4sk=
